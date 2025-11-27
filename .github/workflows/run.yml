@@ -36,10 +36,16 @@ jobs:
         run: |
           git config user.name github-actions
           git config user.email github-actions@users.noreply.github.com
-          git add .
-          git commit -m "persist tokens trigger by ${{ github.event_name }}"
-      - name: Commit changes if any
-        run: |
+
+          git add -A
+
+          # if there are staged changes, commit and push; otherwise do nothing
+          if ! git diff --cached --quiet; then
+            git commit -m "persist tokens trigger by ${{ github.event_name }}"
+            git push origin master
+          else
+            echo "No changes to commit"
+          fi
           if ! git diff-index --quiet HEAD; then
             git commit -am "Automated update"
           else
