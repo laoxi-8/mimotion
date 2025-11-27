@@ -38,4 +38,11 @@ jobs:
           git config user.email github-actions@users.noreply.github.com
           git add .
           git commit -m "persist tokens trigger by ${{ github.event_name }}"
+      - name: Commit changes if any
+        run: |
+          if ! git diff-index --quiet HEAD; then
+            git commit -am "Automated update"
+          else
+            echo "No changes to commit."
+          fi    
           git push origin master
